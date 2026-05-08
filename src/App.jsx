@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
 
+const globalStyles = `
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #080c10; min-height: 100vh; }
+  #root { min-height: 100vh; }
+`;
+
+
 const contextQuestions = [
   {
     id: "size",
@@ -297,6 +304,7 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "24px", position: "relative", overflow: "hidden"
     }}>
+      <style>{globalStyles}</style>
       {/* Sun rays background */}
       <div style={{
         position: "absolute", top: "-200px", left: "50%", transform: "translateX(-50%)",
