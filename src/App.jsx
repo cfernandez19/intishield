@@ -375,7 +375,15 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
         display: "flex", flexDirection: "column",
         padding: "24px", maxWidth: "480px", margin: "0 auto"
       }}>
+        <style>{globalStyles}</style>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
+          <button
+            onClick={() => {
+              if (contextStep === 0) { setScreen("landing"); }
+              else { setContextStep(contextStep - 1); setContextSelected(null); }
+            }}
+            style={{ background: "none", border: "none", color: "#78716c", fontSize: "22px", cursor: "pointer", padding: "0" }}
+          >←</button>
           <div style={{ fontSize: "18px", color: "#fde68a", fontWeight: "700", letterSpacing: "3px" }}>INTI</div>
           <div style={{ fontSize: "13px", color: "#78716c" }}>{contextStep + 1} / {contextQuestions.length}</div>
         </div>
@@ -448,8 +456,16 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
         display: "flex", flexDirection: "column",
         padding: "24px", maxWidth: "480px", margin: "0 auto"
       }}>
+        <style>{globalStyles}</style>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
+          <button
+            onClick={() => {
+              if (current === 0) { setScreen("context"); setContextStep(contextQuestions.length - 1); setContextSelected(null); }
+              else { setCurrent(current - 1); setAnswers(answers.slice(0, -1)); setSelected(null); }
+            }}
+            style={{ background: "none", border: "none", color: "#78716c", fontSize: "22px", cursor: "pointer", padding: "0" }}
+          >←</button>
           <div style={{ fontSize: "18px", color: "#fde68a", fontWeight: "700", letterSpacing: "3px" }}>INTI</div>
           <div style={{ fontSize: "13px", color: "#78716c" }}>{current + 1} / {questions.length}</div>
         </div>
@@ -524,6 +540,7 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
       display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       padding: "24px", gap: "24px"
     }}>
+      <style>{globalStyles}</style>
       <div style={{
         width: "80px", height: "80px", borderRadius: "50%",
         background: "radial-gradient(circle at 40% 40%, #fde68a, #f59e0b)",
@@ -547,6 +564,7 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
       fontFamily: "'Georgia', serif",
       padding: "24px", maxWidth: "480px", margin: "0 auto"
     }}>
+      <style>{globalStyles}</style>
       {/* Header */}
       <div style={{ textAlign: "center", marginBottom: "36px", paddingTop: "12px" }}>
         <div style={{ fontSize: "16px", color: "#fde68a", fontWeight: "700", letterSpacing: "3px", marginBottom: "24px" }}>INTI</div>
@@ -635,6 +653,12 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
           >
             Fix My Risks → Free 14-Day Trial
           </button>
+        ) : showEmail === "submitted" ? (
+          <div style={{ textAlign: "center", padding: "16px" }}>
+            <div style={{ fontSize: "28px", marginBottom: "8px" }}>🌞</div>
+            <div style={{ color: "#fde68a", fontSize: "16px", fontWeight: "600", marginBottom: "6px" }}>You're on the list!</div>
+            <div style={{ color: "#78716c", fontSize: "13px" }}>We'll be in touch soon with your full action plan.</div>
+          </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
             <input
@@ -649,6 +673,25 @@ Write a 3-sentence plain English summary of their biggest risk right now, tailor
               }}
             />
             <button
+              onClick={async () => {
+                if (!email) return;
+                try {
+                  await fetch("https://formspree.io/f/xvzlyalv", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      email,
+                      score: score.grade,
+                      label: score.label,
+                      industry: contextAnswers.industry || "unknown",
+                      size: contextAnswers.size || "unknown",
+                    }),
+                  });
+                  setShowEmail("submitted");
+                } catch (e) {
+                  setShowEmail("submitted");
+                }
+              }}
               style={{
                 width: "100%", padding: "16px", borderRadius: "10px", border: "none",
                 background: "linear-gradient(135deg, #f59e0b, #d97706)",
